@@ -1,0 +1,70 @@
+/* เพิ่ม CSS นี้ในไฟล์สไตล์ของ Sidebar */
+.sidebar {
+    position: fixed; /* ทำให้ Sidebar ติดอยู่กับหน้าจอ */
+    top: 0; /* เริ่มต้นจากด้านบน */
+    left: 0; /* เริ่มต้นจากด้านซ้าย */
+    width: 250px; /* กำหนดความกว้างของ Sidebar */
+    height: 100%; /* ให้สูงเต็มหน้าจอ */
+    background-color: white; /* สีพื้นหลัง */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* เพิ่มเงา */
+    padding: 16px; /* เพิ่ม Padding ด้านใน */
+    z-index: 1000; /* จัดให้ Sidebar อยู่ด้านบน */
+    display: flex; /* ใช้ Flexbox */
+    flex-direction: column; /* จัดองค์ประกอบในแนวตั้ง */
+    transition: transform 0.3s ease; /* เพิ่ม Animation เมื่อเปิด/ปิด */
+    transform: translateX(-100%); /* ซ่อน Sidebar เริ่มต้น */
+  }
+  
+  .sidebar.open {
+    transform: translateX(0); /* แสดง Sidebar */
+  }
+  
+  /* ปุ่มปิด Sidebar */
+  .sidebar .close-btn {
+    align-self: flex-end; /* วางปุ่มปิดทางด้านขวา */
+    cursor: pointer;
+    font-size: 1.5rem;
+  }
+  
+  /* เนื้อหาใน Sidebar */
+  .sidebar .menu-item {
+    margin: 16px 0; /* ระยะห่างระหว่างเมนู */
+    font-size: 1rem;
+    color: #333; /* สีตัวอักษร */
+    text-decoration: none;
+  }
+  
+  .sidebar .menu-item:hover {
+    color: #007bff; /* สีเมื่อ Hover */
+  }
+  .custom-toolbar {
+    display: flex;
+    justify-content: space-between; /* กระจายช่องว่างระหว่าง Icon และ Title */
+    align-items: center; /* จัดให้อยู่กึ่งกลางแนวตั้ง */
+    background-color: #007bff; /* สีพื้นหลัง */
+    color: white;
+    padding: 0 1rem; /* ระยะขอบซ้าย-ขวา */
+  }
+  
+  .menu-icon {
+    margin-right: auto; /* Icon อยู่ด้านซ้ายสุด */
+  }
+  
+  .toolbar-title {
+    flex-grow: 1; /* ให้ Title ใช้พื้นที่ที่เหลือ */
+    text-align: center; /* จัด Title ให้อยู่ตรงกลาง */
+    font-size: 1.25rem; /* ปรับขนาดข้อความ */
+    font-weight: bold; /* ทำให้ข้อความตัวหนา */
+  }
+  
+  mat-icon {
+    font-size: 24px;
+  }
+  
+  button.mat-icon-button {
+    background: none; /* เอากรอบออก */
+    border: none;
+    outline: none;
+    cursor: pointer;
+  }
+  

@@ -1,0 +1,70 @@
+/* ตั้งค่าให้ UI เป็นแบบกลางจอ */
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* ส่วนหัว */
+  .header {
+    text-align: center;
+    background-color: #1976d2;
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+  }
+  
+  /* วันที่ */
+  .date-section {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  /* รายการห้อง */
+  .room-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .room {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .room label {
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .room input {
+    width: 85%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  
+  /* ปุ่มบันทึก */
+  .button-group {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .button-group button {
+    background-color: #1976d2;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .button-group button:hover {
+    background-color: #005cb2;
+  }
+  

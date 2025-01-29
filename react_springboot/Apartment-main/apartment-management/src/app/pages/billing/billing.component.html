@@ -1,0 +1,10 @@
+<div class="billing">
+    <h1>ใบแจ้งหนี้</h1>
+    <div *ngFor="let bill of billingData" class="bill">
+      <h2>ห้อง {{ bill.room }}</h2>
+      <p>ค่าน้ำ: {{ bill.water }}</p>
+      <p>ค่าไฟ: {{ bill.electric }}</p>
+      <p>รวมค่าใช้จ่าย: {{ bill.total }}</p>
+    </div>
+  </div>
+  

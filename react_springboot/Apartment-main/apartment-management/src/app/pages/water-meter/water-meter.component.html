@@ -1,0 +1,33 @@
+<div class="container">
+   
+    <!-- วันที่ -->
+    <section class="date-section">
+      <h2>บันทึกมิเตอร์น้ำ</h2>
+      <p>วันที่: {{ today }}</p>
+    </section>
+  
+  <!-- รายการห้อง -->
+  <form [formGroup]="waterMeterForm" (ngSubmit)="submitWaterMeter()">
+    <section class="room-list">
+      <div class="room" *ngFor="let room of rooms; let i = index">
+        <label for="room{{ i }}">ห้อง {{ room.roomNumber }}</label>
+        <input
+          id="room{{ i }}"
+          type="text"
+          placeholder="0.0"
+          [formControlName]="'room' + i"
+          (input)="updatePendingData(i)"
+          (keydown.enter)="handleEnter($event, i)"
+         
+        />
+
+      </div>
+    </section>
+
+    <!-- ปุ่มบันทึก -->
+    <div class="button-group">
+      <button type="submit">บันทึกข้อมูล</button>
+    </div>
+  </form>
+  </div>
+  
