@@ -27,7 +27,7 @@ public class BillingServiceImpl implements BillingService {
         List<Room> rooms = roomRepository.findAll();
         for (Room room : rooms) {
             // คำนวณค่าใช้จ่ายในแต่ละห้องจากมิเตอร์น้ำและไฟ
-            BigDecimal waterBill = BigDecimal.valueOf(100); // คำนวณจริง
+            BigDecimal waterBill = BigDecimal.valueOf(10); // คำนวณจริง
             BigDecimal electricBill = BigDecimal.valueOf(200); // คำนวณจริง
 
             Billing billing = new Billing();
