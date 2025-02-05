@@ -15,7 +15,8 @@ import { MatTableModule } from '@angular/material/table';
 export class SummaryComponent implements OnInit {
   summaryData: any[] = [];
   displayedColumns: string[] = ['room', 'water', 'electric', 'total'];
-  today = new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
+  selectedMonth: string = this.getCurrentMonth(); // ค่าเริ่มต้นเป็นเดือนปัจจุบัน
+  //today = new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'long' });
 
   constructor(private apiService: ApiService) {}
 
@@ -23,20 +24,44 @@ export class SummaryComponent implements OnInit {
     this.fetchSummary();
   }
 
-  fetchSummary(): void {
-    this.apiService.getRooms().subscribe((data) => {
-      this.summaryData = data.map((room: any) => {
-        const billing = room.billings.length > 0 ? room.billings[0] : null;
-        return {
-          roomNumber: room.roomNumber, 
-          waterBill: billing ? billing.waterBill : 0,
-          electricBill: billing ? billing.electricBill : 0,
-          totalBill: billing ? billing.totalBill : 0
-        };
+/** ดึงข้อมูลสรุปของเดือนที่เลือก */
+fetchSummary(): void {
+  console.log(`🔍 กำลังดึงข้อมูลของเดือน: ${this.selectedMonth}`);
+  this.apiService.getSummary(this.selectedMonth).subscribe((data) => {
+    console.log("📊 ข้อมูลที่โหลด:", data);
+    
+    if (data.length === 0) {
+      // 🔥 ถ้าไม่มีบิลในเดือนนี้ → โหลดรายชื่อห้องแล้วสร้างรายการใหม่
+      this.apiService.getRooms().subscribe((rooms) => {
+        console.log("🛠 ห้องที่โหลดจาก API:", rooms); // ตรวจสอบว่ามี roomNumber หรือไม่
+        this.summaryData = rooms.map((room: any) => ({
+          roomNumber: room.roomNumber, // ✅ ใช้ room.roomNumber เท่านั้นถ้า room เป็น Object
+          waterBill: 0,
+          electricBill: 0,
+          totalBill: 0,
+          month: this.selectedMonth,
+        }));
+        
       });
-  
-      console.log("📢 ข้อมูลที่จัดรูปแบบแล้ว:", this.summaryData);
-    });
+    } else {
+      // ✅ ถ้ามีบิล → ใช้ข้อมูลที่ API ส่งมา
+      this.summaryData = data;
+    }
+  });
+}
+
+
+   /** เมื่อผู้ใช้เลือกเดือนใหม่ */
+   onMonthChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.selectedMonth = input.value;
+    this.fetchSummary(); // โหลดข้อมูลใหม่
+  }
+
+  /** คืนค่าเดือนปัจจุบันในรูปแบบ YYYY-MM */
+  private getCurrentMonth(): string {
+    const today = new Date();
+    return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
   }
   
 

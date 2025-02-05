@@ -1,32 +1,33 @@
 <div class="container">
-    <!-- Header -->
-    <!-- <header class="header">
-      <h1>ระบบจัดการมิเตอร์ไฟ</h1>
-    </header> -->
-  
-    <!-- วันที่ -->
-    <section class="date-section">
-      <h2>บันทึกมิเตอร์ไฟ</h2>
-      <p>วันที่: {{ today }}</p>
-    </section>
-  
-    <!-- รายการห้อง -->
-    <form [formGroup]="electricMeterForm" (ngSubmit)="submitElectricMeter()">
-      <section class="room-list">
-        <div class="room" *ngFor="let room of rooms; let i = index">
-          <label for="room{{ i }}">ห้อง {{ i + 1 }}</label>
-          <input
-            id="room{{ i }}"
-            type="text"
-            placeholder="เลขมิเตอร์"
-            [formControlName]="'room' + i"
-          />
-        </div>
-      </section>
-  
-      <!-- ปุ่มบันทึก -->
-      <div class="button-group">
-        <button type="submit">บันทึกข้อมูล</button>
+   
+  <!-- วันที่ -->
+  <section class="date-section">
+    <h2>บันทึกมิเตอร์ไฟ</h2>
+    <p>วันที่: {{ today }}</p>
+  </section>
+
+  <!-- รายการห้อง -->
+  <form [formGroup]="electricMeterForm" (ngSubmit)="submitElectricMeter()">
+    <section class="room-list">
+      <div class="room" *ngFor="let room of rooms; let i = index">
+        <label for="room{{ i }}">ห้อง {{ room.roomNumber }}</label>
+        <input
+          id="room{{ i }}"
+          type="text"
+          placeholder="0.0"
+          [formControlName]="'room' + i"
+          (input)="updatePendingData(i)"
+          (keydown.enter)="handleEnter($event, i)"
+        
+        />
+
       </div>
-    </form>
+    </section>
+
+    <!-- ปุ่มบันทึก -->
+    <div class="button-group">
+      <button type="submit">บันทึกข้อมูล</button>
+    </div>
+  </form>
 </div>
+

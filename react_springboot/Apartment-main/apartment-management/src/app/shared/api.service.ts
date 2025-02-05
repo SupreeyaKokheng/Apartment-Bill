@@ -23,14 +23,24 @@ export class ApiService {
   
     return this.http.post(`${this.baseUrl}/meters/water`, data, { headers, responseType: 'text' });
   }
-  
 
   saveElectricMeterData(data: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/electric-meter`, data);
+    console.log("📢 Data ที่กำลังส่งไปยัง API:", JSON.stringify(data, null, 2));
+  
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+  
+    return this.http.post(`${this.baseUrl}/meters/electric`, data, { headers, responseType: 'text' });
   }
 
-  getSummary(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/summary`);
+  generateBills(): Observable<any> {
+    return this.http.post(`${this.baseUrl}/billing/generate`,{});
+  }
+  
+  getSummary(month: string): Observable<any> {
+    //return this.http.get(`${this.baseUrl}/summary`);
+    return this.http.get(`${this.baseUrl}/billing/summary?month=${month}`);
   }
 
   getBilling(): Observable<any> {

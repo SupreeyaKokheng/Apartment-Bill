@@ -1,7 +1,9 @@
 <div class="container">
   <section class="date-section">
     <h2>สรุปค่าใช้จ่าย</h2>
-    <p>วันที่: {{ today }}</p>
+    <p>เลือกเดือน-ปี: 
+      <input type="month" [value]="selectedMonth" (change)="onMonthChange($event)">
+    </p>
   </section>
 
   <div class="summary">

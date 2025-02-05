@@ -1,5 +1,6 @@
 package com.apartment.management.controller;
 
+import com.apartment.management.dto.BillingDTO;
 import com.apartment.management.model.Billing;
 import com.apartment.management.service.BillingService;
 import com.apartment.management.service.MeterService;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/billing")
@@ -53,12 +55,28 @@ public class BillingController {
     }
 
     // สรุปค่าใช้จ่ายทั้งหมดในเดือนนี้ (บิลรวม)
-    @GetMapping("/summary/{month}")
-    public ResponseEntity<List<Billing>> getBillingSummaryByMonth(@PathVariable String month) {
+    @GetMapping("/summary")
+    public ResponseEntity<List<Billing>> getSummary(@RequestParam String month) {
         List<Billing> billings = billingService.getBillingSummaryByMonth(month);
+        return ResponseEntity.ok(billings);
+    }
+
+   
+
+
+    @GetMapping("/summary/{month}")
+    public ResponseEntity<List<BillingDTO>> getBillingSummaryByMonth(@PathVariable String month) {
+        List<Billing> billings = billingService.getBillingSummaryByMonth(month);
+    
         if (billings.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>(billings, HttpStatus.OK);
+    
+        // ✅ แปลง `Billing` เป็น `BillingDTO`
+        List<BillingDTO> billingDTOs = billings.stream()
+                .map(BillingDTO::new)
+                .collect(Collectors.toList());
+    
+        return ResponseEntity.ok(billingDTOs);
     }
 }

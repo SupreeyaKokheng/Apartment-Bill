@@ -18,12 +18,22 @@ public class Billing {
     private Room room;
 
     private String month;
+    @Column(name = "room_number")
+    private String roomNumber;
 
     private BigDecimal waterBill; // ค่าใช้จ่ายน้ำ
     private BigDecimal electricBill; // ค่าใช้จ่ายไฟฟ้า
     private BigDecimal totalBill; // รวมค่าใช้จ่ายทั้งหมด
 
     // Getters and Setters
+
+    public String getRoomNumber() {
+        return roomNumber;
+    }
+
+    public void setRoomNumber(String roomNumber) {
+        this.roomNumber = roomNumber;
+    }
 
     public Long getId() {
         return id;

@@ -10,10 +10,10 @@
           <mat-icon>bolt</mat-icon>
           บันทึกมิเตอร์ไฟ
         </a>
-        <a mat-list-item routerLink="/summary">
+        <a mat-list-item (click)="handleSummaryClick()">
           <mat-icon>calculate</mat-icon>
           สรุปค่าใช้จ่าย
-        </a>
+        </a>        
         <a mat-list-item routerLink="/invoice">
           <mat-icon>receipt</mat-icon>
           ใบแจ้งหนี้

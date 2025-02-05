@@ -1,11 +1,15 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
+import { ApiService } from '../../shared/api.service';
 
 // Interface สำหรับโครงสร้างของฟอร์ม
-interface ElectricMeterForm {
-  [key: string]: any; // key เป็น string, value เป็น any
+interface ElectricMeterRecord {
+  roomId: number;
+  meterValue: number;
+  recordDate: string;
 }
+
 
 @Component({
   selector: 'app-electric-meter',
@@ -16,40 +20,104 @@ interface ElectricMeterForm {
 })
 export class ElectricMeterComponent {
   electricMeterForm: FormGroup;
-  rooms = Array.from({ length: 20 }, (_, i) => `Room ${i + 1}`); // สร้าง 20 ห้อง
-  today = new Date().toLocaleDateString('th-TH', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  }); // แสดงวันที่ภาษาไทย
+    rooms: any[] = [];
+    today = new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
+    date = new Date().toISOString().slice(0, 10);
+  
+    pendingData: ElectricMeterRecord[] = []; // ✅ อัปเดตตลอดเวลาที่พิมพ์
+  
+    constructor(private fb: FormBuilder, private apiService: ApiService) {
+      this.electricMeterForm = this.fb.group({});
+    }
+  
+    ngOnInit(): void {
+      this.fetchRooms();
+    }
+  
+    fetchRooms(): void {
+      this.apiService.getRooms().subscribe((data) => {
+        this.rooms = data;
+        this.initializeForm();
+      });
+    }
 
-  date = new Date().toISOString().slice(0, 7); // วันที่ในรูปแบบ YYYY-MM
+    initializeForm(): void {
+      this.electricMeterForm = this.fb.group(
+        this.rooms.reduce((acc, room, i) => {
+          acc[`room${i}`] = [''];
+          return acc;
+        }, {})
+      );
+    }
 
-  constructor(private fb: FormBuilder) {
-    // สร้าง FormGroup แบบไดนามิก
-    this.electricMeterForm = this.fb.group(
-      this.rooms.reduce((acc: ElectricMeterForm, _, i) => {
-        acc[`room${i}`] = ['']; // เพิ่มฟิลด์แต่ละห้องในฟอร์ม
-        return acc;
-      }, {} as ElectricMeterForm) // กำหนด acc เป็น ElectricMeterForm
-    );
+    /**
+   * ✅ อัปเดตข้อมูลใน `pendingData` ทุกครั้งที่มีการพิมพ์
+   */
+  updatePendingData(index: number): void {
+    const rawData = this.electricMeterForm.value;
+    const room = this.rooms[index];
+    const newValue = rawData[`room${index}`];
+
+    if (room && newValue.trim() !== '') {
+      const updatedData: ElectricMeterRecord = {
+        roomId: room.id,
+        meterValue: Number(newValue),
+        recordDate: this.date,
+      };
+
+      // ✅ ค้นหา Index ที่มีอยู่แล้ว และอัปเดตข้อมูล
+      const existingIndex = this.pendingData.findIndex((item) => item.roomId === updatedData.roomId);
+      if (existingIndex === -1) {
+        this.pendingData.push(updatedData);
+      } else {
+        this.pendingData[existingIndex] = updatedData;
+      }
+      console.log('📌 ข้อมูลที่กำลังบันทึก:', this.pendingData);
+    }
   }
 
-  // ฟังก์ชันแปลงข้อมูลฟอร์มเป็น array ของ object เฉพาะห้องที่มีการเปลี่ยนแปลง
-  getFormattedData(): Array<{ roomNumber: string; reading: string; recordDate: string }> {
-    const rawData = this.electricMeterForm.value; // ดึงข้อมูลจากฟอร์ม
-    return this.rooms
-      .map((room, index) => ({
-        roomNumber: `${index + 1}`, // หมายเลขห้อง
-        reading: rawData[`room${index}`], // ค่าที่กรอก
-        recordDate: this.date, // วันที่บันทึก
-      }))
-      .filter((item) => item.reading.trim() !== ''); // กรองเฉพาะค่าที่ไม่ว่างเปล่า
+  /**
+   * ✅ เมื่อกด `Enter` ให้โฟกัสไปยัง Input ถัดไป
+   */
+  handleEnter(event: Event, index: number): void {
+    const keyboardEvent = event as KeyboardEvent;
+    keyboardEvent.preventDefault();
+
+    const nextIndex = index + 1;
+    if (nextIndex < this.rooms.length) {
+      setTimeout(() => {
+        const nextInput = document.getElementById(`room${nextIndex}`) as HTMLInputElement;
+        if (nextInput) {
+          nextInput.focus();
+        }
+      }, 100);
+    }
   }
 
+  
+  /**
+   * ✅ กดปุ่ม `Submit` เพื่อส่งข้อมูลไป API
+   */
   submitElectricMeter(): void {
-    const formattedData = this.getFormattedData(); // แปลงข้อมูล
-    console.log('ข้อมูลที่เปลี่ยนแปลง:', formattedData); // แสดงเฉพาะข้อมูลที่เปลี่ยนแปลง
-    alert('บันทึกข้อมูลสำเร็จ!');
+    if (this.pendingData.length > 0) {
+      console.log('📢 กำลังส่งข้อมูลไปยัง API:', JSON.stringify(this.pendingData, null, 2));
+
+      this.apiService.saveElectricMeterData(this.pendingData).subscribe(
+        (response) => {
+          console.log('✅ บันทึกสำเร็จ:', response);
+          alert('บันทึกข้อมูลสำเร็จ!');
+          this.pendingData = []; // เคลียร์ค่าที่บันทึกแล้ว
+          this.electricMeterForm.reset(); // ล้างฟอร์ม
+        },
+        (error) => {
+          console.error('❌ เกิดข้อผิดพลาด:', error);
+          alert('เกิดข้อผิดพลาด: ' + error.message);
+        }
+      );
+    } else {
+      alert('ไม่มีข้อมูลที่ต้องบันทึก');
+    }
   }
+
+
 }

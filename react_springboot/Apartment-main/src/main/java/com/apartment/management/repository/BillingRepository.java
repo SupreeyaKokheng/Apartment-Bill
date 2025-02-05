@@ -12,4 +12,5 @@ public interface BillingRepository extends JpaRepository<Billing, Long> {
     // ค้นหาบิลตามห้องและเดือน
     List<Billing> findByRoomAndMonth(Room room, String month);
     List<Billing> findByMonth(String month);
+    
 }

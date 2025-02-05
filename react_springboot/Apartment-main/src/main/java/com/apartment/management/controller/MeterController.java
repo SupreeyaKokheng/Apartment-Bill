@@ -27,52 +27,34 @@ public class MeterController {
     @Autowired
     private RoomService roomService;
 
+    //บันทึกมิเตอร์น้ำ
     @PostMapping("/water")
-public ResponseEntity<?> saveWaterMeters(@RequestBody List<MeterDTO> meterDTOs) {
-    try {
-        for (MeterDTO meterDTO : meterDTOs) {
-            meterService.saveWaterMeter(meterDTO.getRoomId(), meterDTO.getMeterValue(), meterDTO.getRecordDate());
-        }
-        return ResponseEntity.status(HttpStatus.CREATED).body("Water meters recorded successfully");
-    } catch (Exception e) {
-        return ResponseEntity.badRequest().body("Failed to record water meters: " + e.getMessage());
-    }
-}
-
-
-    // @PostMapping("/water")
-    // public ResponseEntity<?> saveWaterMeter(@RequestBody List<MeterDTO> meterDTOList) {
-    //     if (meterDTOList == null || meterDTOList.isEmpty()) {
-    //         return ResponseEntity.badRequest().body(Map.of("error", "Invalid data: Empty or null payload"));
-    //     }
-    
-    //     System.out.println("📥 ได้รับข้อมูลจาก Angular: " + meterDTOList);
-    
-    //     try {
-    //         for (MeterDTO meterDTO : meterDTOList) {
-    //             if (meterDTO.getRoomId() == null || meterDTO.getMeterValue() == null || meterDTO.getRecordDate() == null) {
-    //                 return ResponseEntity.badRequest().body(Map.of("error", "Missing required fields"));
-    //             }
-    //             meterService.saveWaterMeter(meterDTO.getRoomId(), meterDTO.getMeterValue(), meterDTO.getRecordDate());
-    //         }
-    //         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message", "Water meters recorded successfully"));
-    //     } catch (Exception e) {
-    //         return ResponseEntity.badRequest().body(Map.of("error", "Failed to record water meters: " + e.getMessage()));
-    //     }
-    // }
-    
-
-    // บันทึกมิเตอร์ไฟ
-    @PostMapping("/electric")
-    public ResponseEntity<?> saveElectricMeter(@RequestBody MeterDTO meterDTO) {
+    public ResponseEntity<?> saveWaterMeters(@RequestBody List<MeterDTO> meterDTOs) {
         try {
-            meterService.saveElectricMeter(meterDTO.getRoomId(), meterDTO.getMeterValue(), meterDTO.getRecordDate());
-            return ResponseEntity.status(HttpStatus.CREATED).body("Electric meter recorded successfully");
+            for (MeterDTO meterDTO : meterDTOs) {
+                meterService.saveWaterMeter(meterDTO.getRoomId(), meterDTO.getMeterValue(), meterDTO.getRecordDate());
+            }
+            return ResponseEntity.status(HttpStatus.CREATED).body("Water meters recorded successfully");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Failed to record electric meter: " + e.getMessage());
+            return ResponseEntity.badRequest().body("Failed to record water meters: " + e.getMessage());
         }
     }
 
+    //บันทึกมิเตอร์ไฟ
+    @PostMapping("/electric")
+    public ResponseEntity<?> saveElectricMeters(@RequestBody List<MeterDTO> meterDTOs) {
+        try {
+            for (MeterDTO meterDTO : meterDTOs) {
+                meterService.saveElectricMeter(meterDTO.getRoomId(), meterDTO.getMeterValue(), meterDTO.getRecordDate());
+            }
+            return ResponseEntity.status(HttpStatus.CREATED).body("Electric meters recorded successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Failed to record electric meters: " + e.getMessage());
+        }
+    }
+
+
+ 
     // ดึงข้อมูลมิเตอร์น้ำตามห้องและเดือน
     @GetMapping("/water/{roomId}")
     public ResponseEntity<List<?>> getWaterMeterRecordsByRoomAndMonth(
