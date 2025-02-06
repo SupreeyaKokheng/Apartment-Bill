@@ -4,6 +4,7 @@ import { ElectricMeterComponent } from './pages/electric-meter/electric-meter.co
 import { SummaryComponent } from './pages/summary/summary.component';
 import { BillingComponent } from './pages/billing/billing.component';
 import { LayoutComponent } from './shared/layout/layout.component';
+import { LoginComponent } from './pages/login/login.component';
 
 export const routes: Routes = [
     {
@@ -14,7 +15,8 @@ export const routes: Routes = [
         { path: 'electric-meter', component: ElectricMeterComponent },
         { path: 'summary', component: SummaryComponent },
         { path: 'billing', component: BillingComponent },
-        { path: '', redirectTo: 'water-meter', pathMatch: 'full' },
+        { path: 'login', component: LoginComponent },
+        { path: '', redirectTo: 'login', pathMatch: 'full' },
       ],
     },
   ];
