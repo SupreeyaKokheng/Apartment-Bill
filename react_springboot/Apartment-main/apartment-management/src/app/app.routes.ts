@@ -5,13 +5,14 @@ import { SummaryComponent } from './pages/summary/summary.component';
 import { BillingComponent } from './pages/billing/billing.component';
 import { LayoutComponent } from './shared/layout/layout.component';
 import { LoginComponent } from './pages/login/login.component';
+import { AuthGuard } from './guards/auth.guard'; // ✅ Import Guard
 
 export const routes: Routes = [
     {
       path: '',
       component: LayoutComponent,
       children: [
-        { path: 'water-meter', component: WaterMeterComponent },
+        { path: 'water-meter', component: WaterMeterComponent , canActivate: [AuthGuard] },
         { path: 'electric-meter', component: ElectricMeterComponent },
         { path: 'summary', component: SummaryComponent },
         { path: 'billing', component: BillingComponent },

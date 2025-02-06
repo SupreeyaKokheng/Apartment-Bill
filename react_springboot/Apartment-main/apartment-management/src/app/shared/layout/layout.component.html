@@ -2,6 +2,7 @@
     <mat-sidenav #sidenav mode="over" [opened]="false">
       <mat-toolbar color="primary">เมนู</mat-toolbar>
       <mat-nav-list>
+        <button (click)="logout()">ออกจากระบบ</button>
         <a mat-list-item routerLink="/water-meter">
           <mat-icon>opacity</mat-icon>
           บันทึกมิเตอร์น้ำ
@@ -18,6 +19,7 @@
           <mat-icon>receipt</mat-icon>
           ใบแจ้งหนี้
         </a>
+      
       </mat-nav-list>
     </mat-sidenav>
   

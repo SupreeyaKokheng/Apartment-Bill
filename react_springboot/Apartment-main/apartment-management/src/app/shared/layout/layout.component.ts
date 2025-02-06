@@ -36,6 +36,16 @@ export class LayoutComponent {
       });
   }
 
+  isLoggedIn(): boolean {
+    return this.apiService.isLoggedIn();
+  }
+
+  logout(): void {
+    this.apiService.logout();
+    alert('ออกจากระบบแล้ว!');
+    this.router.navigate(['/login']);
+  }
+
   /** ✅ ยิง API และเปลี่ยนหน้า */
   handleSummaryClick(): void {
     console.log('🔄 กำลังสร้างบิล...');
