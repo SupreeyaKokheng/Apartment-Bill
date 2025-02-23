@@ -1,5 +1,6 @@
+//โค้ดเก่าแนนด้านบนเทสเจนมา
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
@@ -7,15 +8,29 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 })
 export class ApiService {
   private baseUrl = 'http://localhost:8080/api';
+  private userInfoSubject = new BehaviorSubject<any>(null);
+  userInfo$ = this.userInfoSubject.asObservable();
 
   constructor(private http: HttpClient) {}
-
   login(data: any): Observable<any> {
-    console.log('📢 Data ที่กำลังส่งไปยัง API:', JSON.stringify(data, null, 2));
-    return this.http.post(`${this.baseUrl}/auth/login`, data);
+    return new Observable(observer => {
+      this.http.post(`${this.baseUrl}/auth/login`, data).subscribe(
+        (response: any) => {
+          localStorage.setItem('token', response.token);
+          localStorage.setItem('userInfo', JSON.stringify(response.user));
+          this.userInfoSubject.next(response.user); // ✅ อัปเดต userInfo
+          observer.next(response);
+          observer.complete();
+        },
+        (error) => observer.error(error)
+      );
+    });
   }
+
   logout(): void {
     localStorage.removeItem('token');
+    localStorage.removeItem('userInfo');
+    this.userInfoSubject.next(null); // ✅ อัปเดตค่าให้เป็น null
   }
 
   getToken(): string | null {
@@ -56,9 +71,10 @@ export class ApiService {
     });
   }
 
-  generateBills(): Observable<any> {
-    return this.http.post(`${this.baseUrl}/billing/generate`, {});
-  }
+  generateBills(month: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/billing/generate/${month}`, {});
+}
+
 
   getSummary(month: string): Observable<any> {
     //return this.http.get(`${this.baseUrl}/summary`);
@@ -68,4 +84,9 @@ export class ApiService {
   getBilling(): Observable<any> {
     return this.http.get(`${this.baseUrl}/billing`);
   }
+  
+  updateBillStatus(id: number, status: string): Observable<any> {
+    return this.http.put(`${this.baseUrl}/billing/${id}/status`, { status });
+  }
+  
 }
