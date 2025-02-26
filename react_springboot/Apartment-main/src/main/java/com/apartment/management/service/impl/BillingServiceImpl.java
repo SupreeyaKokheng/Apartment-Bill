@@ -4,10 +4,12 @@ import java.math.BigDecimal;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.apartment.management.dto.BillingDTO;
 import com.apartment.management.model.Billing;
 import com.apartment.management.model.ElectricMeter;
 import com.apartment.management.model.Room;
@@ -177,7 +179,13 @@ public class BillingServiceImpl implements BillingService {
             return billingRepository.save(billing);
         }
 
-        
+     @Override
+    public List<BillingDTO> getAllInvoices() {
+        List<Billing> billings = billingRepository.findAllOrderByRoomNumber();
+         System.out.println(billings);
+        return billings.stream().map(BillingDTO::new).collect(Collectors.toList());
+    }
+
     
 
 }

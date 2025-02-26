@@ -125,5 +125,9 @@ public class BillingController {
         return ResponseEntity.ok(updatedBilling);
     }
     
-
+    @GetMapping("/invoices")
+    public ResponseEntity<List<BillingDTO>> getAllInvoices() {
+        List<BillingDTO> invoices = billingService.getAllInvoices();
+        return ResponseEntity.ok(invoices);
+    }
 }

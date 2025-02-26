@@ -1,0 +1,45 @@
+.container {
+  max-width: 800px;
+  margin: auto;
+}
+
+.invoice-container {
+  margin-bottom: 30px;
+  margin-top: 30px;
+}
+
+.invoice-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+}
+
+.invoice-table th,
+.invoice-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+.invoice-table .header {
+  background-color: #f4a261;
+  color: white;
+  font-size: 18px;
+  text-align: center;
+}
+
+.invoice-table .sub-header {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+.total {
+  background-color: #f8f9fa;
+  font-weight: bold;
+}
+
+.total-amount {
+  color: red;
+  font-size: 18px;
+  font-weight: bold;
+}

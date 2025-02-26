@@ -1,12 +1,14 @@
 package com.apartment.management.dto;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.apartment.management.model.Billing;
 
 public class BillingDTO {
     private Long roomId;
     private String roomNumber;
+    private Double roomPrice;
     private Double waterMeterStart;
     private Double waterMeterEnd;
     private Double electricMeterStart;
@@ -20,6 +22,7 @@ public class BillingDTO {
     private Double commonFee;
     private Double totalAmount;
     private LocalDate billingMonth;
+    private LocalDateTime createdAt;
 
     public BillingDTO(Billing billing) {
         this.roomId = billing.getRoom() != null ? billing.getRoom().getId() : null;
@@ -39,6 +42,7 @@ public class BillingDTO {
         this.parkingFee = billing.getParkingFee() != null ? billing.getParkingFee().doubleValue() : 0.0;
         this.cableFee = billing.getCableFee() != null ? billing.getCableFee().doubleValue() : 0.0;
         this.commonFee = billing.getCommonFee() != null ? billing.getCommonFee().doubleValue() : 0.0;
+        this.roomPrice = billing.getRoomPrice() != null ? billing.getRoomPrice().doubleValue() : 0.0;
 
         // ✅ คำนวณยอดรวม (ป้องกัน null)
         this.totalAmount = billing.getTotalBill() != null ? billing.getTotalBill().doubleValue() : 
@@ -64,6 +68,7 @@ public class BillingDTO {
     public Double getCommonFee() { return commonFee; }
     public Double getTotalAmount() { return totalAmount; }
     public LocalDate getBillingMonth() { return billingMonth; }
+    public Double getRoomPrice() { return roomPrice; }
 
     @Override
     public String toString() {

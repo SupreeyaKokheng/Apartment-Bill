@@ -6,6 +6,8 @@ import { BillingComponent } from './pages/billing/billing.component';
 import { LayoutComponent } from './shared/layout/layout.component';
 import { LoginComponent } from './pages/login/login.component';
 import { AuthGuard } from './guards/auth.guard'; // ✅ Import Guard
+import { InvoiceComponent } from './pages/invoice/invoice.component';
+
 
 export const routes: Routes = [
     {
@@ -13,10 +15,11 @@ export const routes: Routes = [
       component: LayoutComponent,
       children: [
         { path: 'water-meter', component: WaterMeterComponent , canActivate: [AuthGuard] },
-        { path: 'electric-meter', component: ElectricMeterComponent },
-        { path: 'summary', component: SummaryComponent },
-        { path: 'billing', component: BillingComponent },
+        { path: 'electric-meter', component: ElectricMeterComponent , canActivate: [AuthGuard] },
+        { path: 'summary', component: SummaryComponent, canActivate: [AuthGuard]  },
+        { path: 'billing', component: BillingComponent, canActivate: [AuthGuard]  },
         { path: 'login', component: LoginComponent },
+        { path: 'invoice', component: InvoiceComponent, canActivate: [AuthGuard]  }, // เพิ่ม Route ใหม่
         { path: '', redirectTo: 'login', pathMatch: 'full' },
       ],
     },
