@@ -54,6 +54,7 @@ public class BillingServiceImpl implements BillingService {
                 billing.setRoom(room);
                 billing.setRoomNumber(room.getRoomNumber());
                 billing.setMonth(monthString);
+                billing.setStatus("Unpaid"); // ✅ ตั้งค่า Default
             }
 
             // ✅ ดึงค่าห้องจาก FloorPriceRepository ตามชั้นที่กำหนด
@@ -73,7 +74,7 @@ public class BillingServiceImpl implements BillingService {
                     .map(WaterMeter::getMeterValue)
                     .reduce((first, second) -> second)
                     .orElse(0.0);
-                    //.orElse(lastWaterMeter); // ✅ ใช้ค่าเดือนก่อนหน้าถ้าไม่มีค่าปัจจุบัน
+            // .orElse(lastWaterMeter); // ✅ ใช้ค่าเดือนก่อนหน้าถ้าไม่มีค่าปัจจุบัน
 
             double lastElectricMeter = room.getElectricMeters().stream()
                     .filter(meter -> YearMonth.from(meter.getRecordDate()).equals(previousMonth))
@@ -86,7 +87,7 @@ public class BillingServiceImpl implements BillingService {
                     .map(ElectricMeter::getMeterValue)
                     .reduce((first, second) -> second)
                     .orElse(0.0);
-                    //.orElse(lastElectricMeter); // ✅ ใช้ค่าเดือนก่อนหน้าถ้าไม่มีค่าปัจจุบัน
+            // .orElse(lastElectricMeter); // ✅ ใช้ค่าเดือนก่อนหน้าถ้าไม่มีค่าปัจจุบัน
 
             // ✅ ใช้ฟังก์ชันป้องกันมิเตอร์รีเซ็ต
             double waterUsage = calculateMeterUsage(lastWaterMeter, currentWaterMeter);
@@ -103,9 +104,9 @@ public class BillingServiceImpl implements BillingService {
                     .add(defaultCableFee)
                     .add(defaultCommonFee);
             // BigDecimal totalBill = waterBill.add(electricBill)
-            //         .add(defaultParkingFee)
-            //         .add(defaultCableFee)
-            //         .add(defaultCommonFee);
+            // .add(defaultParkingFee)
+            // .add(defaultCableFee)
+            // .add(defaultCommonFee);
 
             System.out.println("💰 รวมค่าใช้จ่ายห้อง " + room.getRoomNumber() + " = " + totalBill);
 
@@ -168,24 +169,22 @@ public class BillingServiceImpl implements BillingService {
             return billingRepository.save(billing);
         }).orElse(null); // ✅ ถ้าไม่เจอบิลให้ return null (ป้องกัน error)
     }
-    
 
-     
-        @Override
-        public Billing createBilling(Billing billing) {
-            if (billing.getStatus() == null || billing.getStatus().isEmpty()) {
-                billing.setStatus("Unpaid"); // ตั้งค่าเริ่มต้น
-            }
-            return billingRepository.save(billing);
+    @Override
+    public Billing createBilling(Billing billing) {
+        if (billing.getStatus() == null || billing.getStatus().isEmpty()) {
+            billing.setStatus("Unpaid"); // ตั้งค่าเริ่มต้น
         }
+        return billingRepository.save(billing);
+    }
 
-     @Override
+    // private final BillingRepository billingRepository;
+
+    @Override
     public List<BillingDTO> getAllInvoices() {
         List<Billing> billings = billingRepository.findAllOrderByRoomNumber();
          System.out.println(billings);
         return billings.stream().map(BillingDTO::new).collect(Collectors.toList());
     }
-
-    
 
 }
