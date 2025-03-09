@@ -179,12 +179,27 @@ public class BillingServiceImpl implements BillingService {
     }
 
     // private final BillingRepository billingRepository;
-
     @Override
     public List<BillingDTO> getAllInvoices() {
         List<Billing> billings = billingRepository.findAllOrderByRoomNumber();
-         System.out.println(billings);
+        System.out.println(billings);
         return billings.stream().map(BillingDTO::new).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BillingDTO> getInvoicesByMonth(String month) {
+        List<Billing> billings = billingRepository.findByMonth(month);
+
+        return billings.stream()
+                .map(BillingDTO::new)
+                .collect(Collectors.toList());
+    }
+
+// ✅ ดึงข้อมูลเฉพาะเดือนปัจจุบัน
+    @Override
+    public List<BillingDTO> getInvoicesForCurrentMonth() {
+        String currentMonth = YearMonth.now().toString(); // 🔹 ดึงเดือนปัจจุบัน "YYYY-MM"
+        return getInvoicesByMonth(currentMonth);
     }
 
 }

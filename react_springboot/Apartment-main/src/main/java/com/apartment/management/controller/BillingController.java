@@ -112,26 +112,33 @@ public class BillingController {
         if (request == null || !request.containsKey("status")) {
             return ResponseEntity.badRequest().body("Missing 'status' field in request");
         }
-    
+
         String newStatus = request.get("status");
-    
+
         if (!"PAID".equals(newStatus) && !"UNPAID".equals(newStatus)) {
             return ResponseEntity.badRequest().body("Invalid status value");
         }
-    
+
         Billing updatedBilling = billingService.updateBillingStatus(id, newStatus);
         if (updatedBilling == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-    
+
         return ResponseEntity.ok(updatedBilling);
     }
 
+    // @GetMapping("/invoices")
+    // public ResponseEntity<List<BillingDTO>> getAllInvoices() {
+    //     List<BillingDTO> invoices = billingService.getAllInvoices();
+    //     return ResponseEntity.ok(invoices);
+    // }
     @GetMapping("/invoices")
-    public ResponseEntity<List<BillingDTO>> getAllInvoices() {
-        List<BillingDTO> invoices = billingService.getAllInvoices();
-        return ResponseEntity.ok(invoices);
-    }
+    public ResponseEntity<List<BillingDTO>> getInvoicesForCurrentMonth() {
+        List<BillingDTO> invoices = billingService.getInvoicesForCurrentMonth();
     
-
+        if (invoices.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return ResponseEntity.ok(invoices);
+    }    
 }
