@@ -1,21 +1,23 @@
-# ใช้ Base Image ของ JDK 17
-FROM openjdk:17 AS build
 
-# กำหนด Working Directory
+# 1. ใช้ Base Image ของ Maven + JDK 17
+FROM maven:3.8.5-openjdk-17 AS build
+
+# 2. กำหนด Working Directory
 WORKDIR /app
 
-# คัดลอกไฟล์โปรเจกต์ทั้งหมดไปยัง Container
+# 3. คัดลอกไฟล์ทั้งหมดไปยัง Container
 COPY . .
 
-# ให้สิทธิ์ mvnw และติดตั้ง Dependencies
-RUN chmod +x ./mvnw && ./mvnw clean install -DskipTests
+# 4. ติดตั้ง Dependency และ Build โดยข้ามการรัน Test
+RUN mvn clean package -DskipTests
 
-# ใช้ Image ใหม่เพื่อรัน Application จริง
+# 5. ใช้ Image ใหม่เพื่อรัน Application จริง
 FROM openjdk:17
 WORKDIR /app
 
-# คัลอก JAR ที่ Build มาใช้ใน Container
+# 6. คัดลอกไฟล์ JAR ที่สร้างจาก Build Phase
 COPY --from=build /app/target/*.jar app.jar
 
-# รั Application
+# 7. รัน Spring Boot Application
 CMD ["java", "-jar", "app.jar"]
+
